@@ -4,8 +4,7 @@ const ofertaSchema = new mongoose.Schema({
     produto: String,
     url: String,
     palavraChave: String,
-    frequencia: String,
-    meioNotificacao: String,
+    marca: String,
     status: {
         type: String,
         enum: ['ativa', 'inativa'],
