@@ -10,7 +10,7 @@ const OfertaForm = () => {
         status: 'ativa'
     });
 
-    const handleChage = (e) => {
+    const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value });
     };
 
