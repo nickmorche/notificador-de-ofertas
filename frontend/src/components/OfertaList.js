@@ -5,8 +5,9 @@ const OfertaList = () => {
     const [ofertas, setOfertas] = useState([]);
     
     const fetchOfertas = async () => {
-        const res = await axios.get('http://localhost:5000/api/ofertas');
-        setOfertas(res.data);
+        // const res = await axios.get('http://localhost:5000/api/ofertas');
+        // setOfertas(res.data);
+        return [];
     };
 
     useEffect(() => {
@@ -17,11 +18,11 @@ const OfertaList = () => {
         <div>
             <h2>Ofertas Cadastradas</h2>
             <ul>
-                {ofertas.map(oferta => {
+                {/* {ofertas.map(oferta => {
                     <li key={oferta._id}>
                         <strong>{oferta.produto} - {oferta.marca} - {oferta.url} ({oferta.status})</strong>
                     </li>
-                })}
+                })} */}
             </ul>
         </div>
     );
