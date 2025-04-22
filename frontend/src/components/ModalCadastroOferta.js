@@ -15,6 +15,10 @@ import {
 import axios from 'axios';
 //https://www.chakra-ui.com/docs/components/dialog
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 const ModalCadastroOferta = () => {
   const ref = useRef(null)
   const [open, setOpen] = useState(false)
@@ -33,7 +37,7 @@ const ModalCadastroOferta = () => {
     //if (onSubmit) onSubmit(formData);
     e.preventDefault();
     try {
-        axios.post('https://localhost:5000/api/ofertas', formData);
+        axios.post(api.baseURL + '/api/ofertas', formData);
         alert('Oferta cadastrada!')
         setFormData({
             produto: '',
