@@ -7,17 +7,14 @@ import ModalCadastroOferta from './components/ModalCadastroOferta.js';
 
 
 function App(){
-  const handleSubmit = (formData) => {
-    console.log('Dados enviados:', formData);
-    // aqui você pode chamar uma rota backend com axios
-  };
+
 
     
   return (
   <div style={{ padding: '20px', fontFamily: 'sans-serif'}}>
       <h1>Cadastro de Ofertas</h1>
       <Box p={5}>
-        <ModalCadastroOferta onSubmit={handleSubmit} />
+        <ModalCadastroOferta />
       </Box>
       <hr />
       <OfertaList />

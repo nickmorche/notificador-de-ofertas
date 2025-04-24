@@ -20,7 +20,7 @@ const OfertaList = () => {
             <ul>
                 {ofertas.map(oferta => (
                     <li key={oferta._id}>
-                        <strong>{oferta.nome} - {oferta.marca} - {oferta.site} ({oferta.status})</strong>
+                        <strong>{oferta.produto} - {oferta.marca} - {oferta.site} ({oferta.status})</strong>
                     </li>
                 ))} 
             </ul>

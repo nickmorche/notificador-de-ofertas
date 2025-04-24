@@ -23,7 +23,7 @@ const ModalCadastroOferta = () => {
   const ref = useRef(null)
   const [open, setOpen] = useState(false)
   const [formData, setFormData] = React.useState({
-    nomeProduto: '',
+    produto: '',
     url: '',
     marca: ''
   });
@@ -37,7 +37,7 @@ const ModalCadastroOferta = () => {
     //if (onSubmit) onSubmit(formData);
     e.preventDefault();
     try {
-        axios.post(api.baseURL + '/api/ofertas', formData);
+        axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, formData);
         alert('Oferta cadastrada!')
         setFormData({
             produto: '',
@@ -50,7 +50,7 @@ const ModalCadastroOferta = () => {
         alert('Erro ao cadastrar abaixo. Por favor contate a T.I.');
         console.error(err);
     }
-    setFormData({ nomeProduto: '', url: '', precoDesejado: '', marca: '' });
+    setFormData({ produto: '', url: '', precoDesejado: '', marca: '' });
   };
 
   return (
@@ -71,15 +71,15 @@ const ModalCadastroOferta = () => {
               <Stack gap='4'>
                 <Field.Root>
                   <Field.Label>Produto</Field.Label>
-                  <Input  ref={ref} placeholder="Digite o nome do produto..." />
+                  <Input name='produto' onChange={handleChange} ref={ref} placeholder="Digite o nome do produto..." />
                 </Field.Root>
                 <Field.Root>
                   <Field.Label>Marca</Field.Label>
-                  <Input onChange={handleChange} placeholder="Digite o nome da marca..." />
+                  <Input name='marca' onChange={handleChange} placeholder="Digite o nome da marca..." />
                 </Field.Root>
                 <Field.Root>
                   <Field.Label>URL</Field.Label>
-                  <Input onChange={handleChange} placeholder="Digite a URL do site..."></Input>
+                  <Input name='url' onChange={handleChange} placeholder="Digite a URL do site..."></Input>
                 </Field.Root>
               </Stack>
             </Dialog.Body>
@@ -103,7 +103,7 @@ const ModalCadastroOferta = () => {
 // const ModalCadastroOferta = ({ onSubmit }) => {
 //   const { isOpen, onOpen, onClose } = useDisclosure();
 //   const [formData, setFormData] = React.useState({
-//     nomeProduto: '',
+//     produto: '',
 //     url: '',
 //     precoDesejado: ''
 //   });
@@ -116,7 +116,7 @@ const ModalCadastroOferta = () => {
 //   const handleSubmit = () => {
 //     if (onSubmit) onSubmit(formData);
 //     onClose();
-//     setFormData({ nomeProduto: '', url: '', precoDesejado: '' });
+//     setFormData({ produto: '', url: '', precoDesejado: '' });
 //   };
 
 //   return (
@@ -133,8 +133,8 @@ const ModalCadastroOferta = () => {
 //               <FormLabel>Nome do Produto</FormLabel>
 //               <Input
 //                 placeholder="Tênis Nike Air Max"
-//                 name="nomeProduto"
-//                 value={formData.nomeProduto}
+//                 name="produto"
+//                 value={formData.produto}
 //                 onChange={handleChange}
 //               />
 //             </FormControl>
