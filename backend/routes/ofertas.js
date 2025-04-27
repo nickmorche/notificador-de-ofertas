@@ -22,4 +22,32 @@ router.get('/', async (req, res) => {
     }
 });
 
+//Deletar uma oferta
+router.delete('/:id', async (req, res) => {
+    try { 
+        const { id } = req.params;
+        const ofertaDeletada = await Oferta.findByIdAndDelete(id);
+        if(!ofertaDeletada) {
+            return res.status(404).json({ erro: 'Oferta não encontrada'});
+        }
+        res.json({ mensagem: 'Oferta deletada com sucesso' });
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
+    }
+});
+
+// Atualizar uma oferta
+router.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ofertaAtualizada = await Oferta.findByIdAndUpdate(id, req.body, { new: true });
+        if (!ofertaAtualizada) {
+            return res.status(404).json({ erro: 'Oferta não encontrada' });
+        }
+        res.json(ofertaAtualizada);
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
+    }
+});
+
 module.exports = router;
