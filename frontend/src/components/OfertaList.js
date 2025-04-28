@@ -49,28 +49,12 @@ const OfertaList = () => {
     };
 
     const saveOferta = async (data) => {
-        console.log(data);
-        console.log(selectedOferta);
         if(selectedOferta.hasOwnProperty('_id')){
-            axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
-            // const updatedOfertas = ofertas.map(oferta => 
-            //     oferta.id === selectedOferta.id ? data: oferta
-            // );
-            // setOfertas(updatedOfertas);
+            await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
             toast.success('Oferta atualizada');
         } else {
             delete data.id;
-            axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
-            // const newOferta = {
-            //     id: Date.now(),
-            //     produto: data.produto,
-            //     marca: data.marca,
-            //     url: data.url,
-            //     status: 'ativa'
-            // };
-
-            // setOfertas([...ofertas, data]);
-            
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
             toast.success('Oferta cadastrada');
         }
         setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' })
@@ -81,7 +65,8 @@ const OfertaList = () => {
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog()
         if (confirmed) {
-            axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+            await fetchOfertas();
             toast.success('Oferta deletada');
         }
     }
