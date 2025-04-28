@@ -81,7 +81,7 @@ const OfertaList = () => {
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog()
         if (confirmed) {
-            axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete._id}`);
+            axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
             toast.success('Oferta deletada');
         }
     }
@@ -114,9 +114,9 @@ const OfertaList = () => {
                     <li key={oferta._id}>
                         <strong>{oferta.produto} - {oferta.marca} - {oferta.url} ({oferta.status})</strong>
                         <Button onClick={() => handleEditButton(oferta)}>Editar</Button>
-                        {/* <Button colorScheme="red" onClick={() => handleDeleteClick(oferta._id)}>
+                        <Button colorScheme="red" onClick={() => handleDeleteClick(oferta._id)}>
                             Deletar
-                        </Button> */}
+                        </Button>
                     </li>
                 ))} 
             </ul>
