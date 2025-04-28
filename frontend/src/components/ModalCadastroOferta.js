@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Button,
   CloseButton,
@@ -13,19 +13,21 @@ import {
   FormControl
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 //https://www.chakra-ui.com/docs/components/dialog
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-const ModalCadastroOferta = () => {
-  const ref = useRef(null)
-  const [open, setOpen] = useState(false)
+const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
+  const ref = useRef(null);
   const [formData, setFormData] = React.useState({
+    id: '',
     produto: '',
     url: '',
-    marca: ''
+    marca: '',
+    status: 'ativa'
   });
 
   const handleChange = (e) => {
@@ -34,38 +36,54 @@ const ModalCadastroOferta = () => {
   };
 
   const handleSubmit = (e) => {
-    //if (onSubmit) onSubmit(formData);
     e.preventDefault();
     try {
-        axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, formData);
-        alert('Oferta cadastrada!')
+        // axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, formData);
+        onSave(formData);
         setFormData({
+            id: '', 
             produto: '',
             url: '',
-            palavraChave: '',
             marca: '',
             status: 'ativa'
         });
     } catch (err) {
-        alert('Erro ao cadastrar abaixo. Por favor contate a T.I.');
         console.error(err);
+        toast.error('Erro ao cadastrar abaixo. Por favor contate a T.I. Mensagem: ' + err);
     }
-    setFormData({ produto: '', url: '', precoDesejado: '', marca: '' });
+    setFormData({ id: '', produto: '', url: '', precoDesejado: '', marca: '' });
   };
 
+  useEffect(() => {
+    if (oferta) {
+        setFormData({
+            id: oferta.id || '',
+            produto: oferta.produto || '',
+            url: oferta.url || '',
+            marca: oferta.marca || '',
+            status: 'ativa'
+        });
+    } else {
+        setFormData({
+            id: '',
+            produto: '',
+            url: '',
+            marca: '',
+            status: 'ativa'
+        });
+    }
+  }, [oferta]);
+
+  // onOpenChange={(e) => setOpen(e.open)}
+
   return (
-    <Dialog.Root key="xl" size="lg" placement="center" motionPreset="slide-in-bottom" open={open} onOpenChange={(e) => setOpen(e.open)}>
-      <Dialog.Trigger asChild>
-        <Button variant="outline" size="sm">
-          Cadastrar produto
-        </Button>
-      </Dialog.Trigger>
+    <Dialog.Root key="xl" size="lg" placement="center" motionPreset="slide-in-bottom" open={isOpen}>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Cadastro de Produto</Dialog.Title>
+              <Dialog.Title>{oferta ? 'Editar Oferta' : 'Cadastro de Produto'}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb="4">
               <Stack gap='4'>
@@ -85,11 +103,11 @@ const ModalCadastroOferta = () => {
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" onClick={onClose}>Cancelar</Button>
               </Dialog.ActionTrigger>
-              <Button onClick={handleSubmit}>Save</Button>
+              <Button onClick={handleSubmit}>{oferta ? 'Salvar alterações' : 'Adicionar'}</Button>
             </Dialog.Footer>
-            <Dialog.CloseTrigger asChild>
+            <Dialog.CloseTrigger asChild onClick={onClose}>
               <CloseButton size="sm" />
             </Dialog.CloseTrigger>
           </Dialog.Content>
