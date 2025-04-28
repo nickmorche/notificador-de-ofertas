@@ -18,7 +18,10 @@ const OfertaList = () => {
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     
     const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' });
+    };
 
     const openConfirmDialog = () => {
         setIsConfirmDialogOpen(true)
@@ -40,15 +43,22 @@ const OfertaList = () => {
     const fetchOfertas = async () => {
         console.log('passei por aqui');
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/ofertas`);
-        //let ofertas_teste = res.data;
+        let ofertas_teste = res.data;
+        console.log(ofertas_teste);
         setOfertas(res.data);
     };
 
     const saveOferta = async (data) => {
         console.log(data);
         console.log(selectedOferta);
-        if(data.id == ''){
-        // if (!selectedOferta && selectedOferta.hasOwnProperty('id') && selectedOferta.id == ''){
+        if(selectedOferta.hasOwnProperty('_id')){
+            axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
+            // const updatedOfertas = ofertas.map(oferta => 
+            //     oferta.id === selectedOferta.id ? data: oferta
+            // );
+            // setOfertas(updatedOfertas);
+            toast.success('Oferta atualizada');
+        } else {
             delete data.id;
             axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
             // const newOferta = {
@@ -62,20 +72,22 @@ const OfertaList = () => {
             // setOfertas([...ofertas, data]);
             
             toast.success('Oferta cadastrada');
-        } else {
-            axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
-            // const updatedOfertas = ofertas.map(oferta => 
-            //     oferta.id === selectedOferta.id ? data: oferta
-            // );
-            // setOfertas(updatedOfertas);
-            toast.success('Oferta atualizada');
         }
-        fetchOfertas();
         setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' })
+        await fetchOfertas();
         setIsModalOpen(false)
     }
 
+    const handleDeleteClick = async (ofertaToDelete) => {
+        const confirmed = await openConfirmDialog()
+        if (confirmed) {
+            axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete._id}`);
+            toast.success('Oferta deletada');
+        }
+    }
+
     const handleEditButton = (oferta) => {
+        // console.log(oferta);
         setSelectedOferta({ ...oferta });
         openModal()
     }
@@ -101,6 +113,10 @@ const OfertaList = () => {
                 {ofertas.map(oferta => (
                     <li key={oferta._id}>
                         <strong>{oferta.produto} - {oferta.marca} - {oferta.url} ({oferta.status})</strong>
+                        <Button onClick={() => handleEditButton(oferta)}>Editar</Button>
+                        {/* <Button colorScheme="red" onClick={() => handleDeleteClick(oferta._id)}>
+                            Deletar
+                        </Button> */}
                     </li>
                 ))} 
             </ul>

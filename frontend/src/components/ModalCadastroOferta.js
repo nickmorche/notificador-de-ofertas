@@ -22,13 +22,14 @@ const api = axios.create({
 
 const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
   const ref = useRef(null);
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     id: '',
     produto: '',
     url: '',
     marca: '',
     status: 'ativa'
   });
+  const [isEdicao, setIsEdicao] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,23 +56,26 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
   };
 
   useEffect(() => {
-    if (oferta) {
-        setFormData({
-            id: oferta.id || '',
-            produto: oferta.produto || '',
-            url: oferta.url || '',
-            marca: oferta.marca || '',
-            status: 'ativa'
-        });
+    if (oferta && oferta.produto != '') {
+      setIsEdicao(true);
+      setFormData({
+          id: oferta.id || '',
+          produto: oferta.produto || '',
+          url: oferta.url || '',
+          marca: oferta.marca || '',
+          status: 'ativa'
+      });
     } else {
-        setFormData({
-            id: '',
-            produto: '',
-            url: '',
-            marca: '',
-            status: 'ativa'
-        });
+      setIsEdicao(false);
+      setFormData({
+          id: '',
+          produto: '',
+          url: '',
+          marca: '',
+          status: 'ativa'
+      });
     }
+    console.log(isEdicao);
   }, [oferta]);
 
   // onOpenChange={(e) => setOpen(e.open)}
@@ -83,21 +87,21 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>{oferta ? 'Editar Oferta' : 'Cadastro de Produto'}</Dialog.Title>
+              <Dialog.Title>{isEdicao ? 'Editar Oferta' : 'Cadastro de Produto'}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb="4">
               <Stack gap='4'>
                 <Field.Root>
                   <Field.Label>Produto</Field.Label>
-                  <Input name='produto' onChange={handleChange} ref={ref} placeholder="Digite o nome do produto..." />
+                  <Input name='produto' value={formData.produto} onChange={handleChange} ref={ref} placeholder="Digite o nome do produto..." />
                 </Field.Root>
                 <Field.Root>
                   <Field.Label>Marca</Field.Label>
-                  <Input name='marca' onChange={handleChange} placeholder="Digite o nome da marca..." />
+                  <Input name='marca' value={formData.marca} onChange={handleChange} placeholder="Digite o nome da marca..." />
                 </Field.Root>
                 <Field.Root>
                   <Field.Label>URL</Field.Label>
-                  <Input name='url' onChange={handleChange} placeholder="Digite a URL do site..."></Input>
+                  <Input name='url' value={formData.url} onChange={handleChange} placeholder="Digite a URL do site..."></Input>
                 </Field.Root>
               </Stack>
             </Dialog.Body>
@@ -105,7 +109,7 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
               <Dialog.ActionTrigger asChild>
                 <Button variant="outline" onClick={onClose}>Cancelar</Button>
               </Dialog.ActionTrigger>
-              <Button onClick={handleSubmit}>{oferta ? 'Salvar alterações' : 'Adicionar'}</Button>
+              <Button onClick={handleSubmit}>{isEdicao ? 'Salvar alterações' : 'Adicionar'}</Button>
             </Dialog.Footer>
             <Dialog.CloseTrigger asChild onClick={onClose}>
               <CloseButton size="sm" />
