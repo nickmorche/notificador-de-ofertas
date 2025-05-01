@@ -6,7 +6,7 @@ import {
 import axios from 'axios';
 import ModalCadastroOferta from './ModalCadastroOferta.js';
 import ConfirmDialog from './ConfirmDialog.js';
-import { toast } from 'react-toastify';
+import { toaster } from "./ui/toaster.jsx";
 
 const OfertaList = () => {
     const [promiseHandlers, setPromiseHandlers] = useState(null);
@@ -43,19 +43,39 @@ const OfertaList = () => {
     const fetchOfertas = async () => {
         console.log('passei por aqui');
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/ofertas`);
-        let ofertas_teste = res.data;
-        console.log(ofertas_teste);
         setOfertas(res.data);
     };
 
     const saveOferta = async (data) => {
         if(selectedOferta.hasOwnProperty('_id')){
-            await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
-            toast.success('Oferta atualizada');
+            const promise = axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
+
+            const response = await toaster.promise(promise, {
+                success: {
+                    title: "Oferta atualizada!",
+                    description: " ",
+                },
+                error: {
+                    title: "Erro ao atualizar oferta",
+                    description: "Algo deu errado ao atualizar",
+                },
+                loading: { title: "Atualizando...", description: "Por favor, espere" },
+            });
         } else {
             delete data.id;
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
-            toast.success('Oferta cadastrada');
+            const promise = axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
+
+            const response = toaster.promise(promise, {
+                success: {
+                    title: "Oferta cadastrada!",
+                    description: "espere pelas notificações",
+                },
+                error: {
+                    title: "Erro ao cadastrar oferta",
+                    description: "Algo deu errado ao cadastrar",
+                },
+                loading: { title: "Cadastrando...", description: "Por favor, espere" },
+            });
         }
         setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' })
         await fetchOfertas();
@@ -65,9 +85,24 @@ const OfertaList = () => {
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog()
         if (confirmed) {
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+            const promise = axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+
+            const response = toaster.promise(promise, {
+                success: {
+                    title: "Oferta deletada!",
+                    description: " ",
+                },
+                error: {
+                    title: "Erro ao deletar oferta",
+                    description: "Algo deu errado ao deletar",
+                },
+                loading: { title: "Deletando...", description: "Por favor, espere" },
+            });
             await fetchOfertas();
-            toast.success('Oferta deletada');
+            // toaster.create({
+            //     title: `Oferta deletada!`,
+            //     type: "success",
+            // })
         }
     }
 
@@ -84,6 +119,29 @@ const OfertaList = () => {
     return (
         <div>
             <Box p={5}>
+            <Button onClick={() => { 
+                toaster.create({
+                    title: `Oferta cadastrada!`,
+                    type: "success",
+                })
+            }}>Mostrar Toast de Sucesso</Button>
+            <Button onClick={() => {
+                const promise = new Promise((resolve) => {
+                    setTimeout(() => resolve(), 5000)
+                });
+
+                toaster.promise(promise, {
+                    success: {
+                        title: "Successfully uploaded!",
+                        description: "Looks great",
+                    },
+                    error: {
+                        title: "Upload failed",
+                        description: "Something wrong with the upload",
+                    },
+                    loading: { title: "Uploading...", description: "Please wait" },
+                })
+            }}>Mostrar Toast</Button>
                 <Button onClick={openModal}>Cadastrar Oferta</Button>
                 <ModalCadastroOferta 
                     isOpen={isModalOpen} 

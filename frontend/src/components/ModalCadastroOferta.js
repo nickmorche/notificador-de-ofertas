@@ -13,7 +13,6 @@ import {
   FormControl
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 //https://www.chakra-ui.com/docs/components/dialog
 
 const api = axios.create({
@@ -50,7 +49,7 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
         });
     } catch (err) {
         console.error(err);
-        toast.error('Erro ao cadastrar abaixo. Por favor contate a T.I. Mensagem: ' + err);
+        // toast.error('Erro ao cadastrar abaixo. Por favor contate a T.I. Mensagem: ' + err);
     }
     setFormData({ id: '', produto: '', url: '', precoDesejado: '', marca: '' });
   };
