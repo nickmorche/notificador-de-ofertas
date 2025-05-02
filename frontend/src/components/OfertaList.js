@@ -47,40 +47,41 @@ const OfertaList = () => {
     };
 
     const saveOferta = async (data) => {
-        if(selectedOferta.hasOwnProperty('_id')){
-            const promise = axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
-
-            const response = await toaster.promise(promise, {
-                success: {
-                    title: "Oferta atualizada!",
-                    description: " ",
-                },
-                error: {
-                    title: "Erro ao atualizar oferta",
-                    description: "Algo deu errado ao atualizar",
-                },
-                loading: { title: "Atualizando...", description: "Por favor, espere" },
-            });
-        } else {
-            delete data.id;
-            const promise = axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
-
-            const response = toaster.promise(promise, {
-                success: {
-                    title: "Oferta cadastrada!",
-                    description: "espere pelas notificações",
-                },
-                error: {
-                    title: "Erro ao cadastrar oferta",
-                    description: "Algo deu errado ao cadastrar",
-                },
-                loading: { title: "Cadastrando...", description: "Por favor, espere" },
-            });
-        }
-        setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' })
-        await fetchOfertas();
-        setIsModalOpen(false)
-    }
+        const isEdit = selectedOferta.hasOwnProperty('_id');
+    
+        const saveAndUpdate = async () => {
+            if (isEdit) {
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
+            } else {
+                delete data.id;
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
+            }
+    
+            // Aguarda atualização da lista
+            await fetchOfertas();
+    
+            // Limpa e fecha modal
+            setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' });
+            setIsModalOpen(false);
+        };
+    
+        // Garante que o toast reflita todo o processo
+        await toaster.promise(saveAndUpdate(), {
+            success: {
+                title: isEdit ? "Oferta atualizada!" : "Oferta cadastrada!",
+                description: "Tudo certo!",
+            },
+            error: {
+                title: isEdit ? "Erro ao atualizar oferta" : "Erro ao cadastrar oferta",
+                description: "Algo deu errado, tente novamente.",
+            },
+            loading: {
+                title: isEdit ? "Atualizando..." : "Cadastrando...",
+                description: "Por favor, espere.",
+            },
+        });
+    };
+    
 
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog()
