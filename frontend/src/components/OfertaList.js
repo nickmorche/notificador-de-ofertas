@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    Box,
-} from '@chakra-ui/react';
+import { Card, Status, Text, Box, Button, HStack, Stack, SimpleGrid } from '@chakra-ui/react';
 import axios from 'axios';
-import ModalCadastroOferta from './ModalCadastroOferta.js';
+import ModalOferta from './ModalOferta.js';
 import ConfirmDialog from './ConfirmDialog.js';
 import { toaster } from "./ui/toaster.jsx";
+import { MdEdit } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
+import { IoIosAddCircle } from "react-icons/io";
 
 const OfertaList = () => {
     const [promiseHandlers, setPromiseHandlers] = useState(null);
@@ -41,7 +41,6 @@ const OfertaList = () => {
     }
 
     const fetchOfertas = async () => {
-        console.log('passei por aqui');
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/ofertas`);
         setOfertas(res.data);
     };
@@ -84,11 +83,17 @@ const OfertaList = () => {
     
 
     const handleDeleteClick = async (ofertaToDelete) => {
-        const confirmed = await openConfirmDialog()
-        if (confirmed) {
-            const promise = axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+        const confirmed = await openConfirmDialog();
 
-            const response = toaster.promise(promise, {
+        const deleteAndUpdate = async () => {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
+            
+            // Aguarda atualização da lista
+            await fetchOfertas();
+        };
+
+        if (confirmed) {
+            await toaster.promise(deleteAndUpdate(), {
                 success: {
                     title: "Oferta deletada!",
                     description: " ",
@@ -99,16 +104,10 @@ const OfertaList = () => {
                 },
                 loading: { title: "Deletando...", description: "Por favor, espere" },
             });
-            await fetchOfertas();
-            // toaster.create({
-            //     title: `Oferta deletada!`,
-            //     type: "success",
-            // })
         }
     }
 
     const handleEditButton = (oferta) => {
-        // console.log(oferta);
         setSelectedOferta({ ...oferta });
         openModal()
     }
@@ -120,31 +119,8 @@ const OfertaList = () => {
     return (
         <div>
             <Box p={5}>
-            <Button onClick={() => { 
-                toaster.create({
-                    title: `Oferta cadastrada!`,
-                    type: "success",
-                })
-            }}>Mostrar Toast de Sucesso</Button>
-            <Button onClick={() => {
-                const promise = new Promise((resolve) => {
-                    setTimeout(() => resolve(), 5000)
-                });
-
-                toaster.promise(promise, {
-                    success: {
-                        title: "Successfully uploaded!",
-                        description: "Looks great",
-                    },
-                    error: {
-                        title: "Upload failed",
-                        description: "Something wrong with the upload",
-                    },
-                    loading: { title: "Uploading...", description: "Please wait" },
-                })
-            }}>Mostrar Toast</Button>
-                <Button onClick={openModal}>Cadastrar Oferta</Button>
-                <ModalCadastroOferta 
+                <Button onClick={openModal} colorPalette={'blue'}><IoIosAddCircle /> Cadastrar Oferta</Button>
+                <ModalOferta 
                     isOpen={isModalOpen} 
                     onClose={closeModal} 
                     onSave={saveOferta} 
@@ -153,17 +129,29 @@ const OfertaList = () => {
             </Box>
             <hr />
             <h2>Ofertas Cadastradas</h2>
-            <ul>
+            <SimpleGrid columns={{ base: 1, md: 2 }} minChildWidth="sm" spacing={4}>
                 {ofertas.map(oferta => (
-                    <li key={oferta._id}>
-                        <strong>{oferta.produto} - {oferta.marca} - {oferta.url} ({oferta.status})</strong>
-                        <Button onClick={() => handleEditButton(oferta)}>Editar</Button>
-                        <Button colorScheme="red" onClick={() => handleDeleteClick(oferta._id)}>
-                            Deletar
-                        </Button>
-                    </li>
+                    <Card.Root key={oferta._id}>
+                        <Card.Body>
+                            <HStack mb="4" gap="1">
+                                <Status.Root colorPalette={oferta.status == 'ativa' ? 'green' : 'red'}>
+                                    <Status.Indicator />
+                                </Status.Root>
+                                <Text fontWeight="bold">
+                                    {oferta.produto} - {oferta.marca}
+                                </Text>
+                            </HStack>
+                            <Text fontSize="sm" noOfLines={1}>{oferta.url}</Text>
+                        </Card.Body>
+                        <Card.Footer>
+                            <HStack spacing={3}>
+                                <Button size="sm" onClick={() => handleEditButton(oferta)}><MdEdit /> Editar</Button>
+                                <Button size="sm" colorPalette="red" onClick={() => handleDeleteClick(oferta._id)}><FaTrash />Deletar</Button>
+                            </HStack>
+                        </Card.Footer>
+                    </Card.Root>
                 ))} 
-            </ul>
+            </SimpleGrid>
             <ConfirmDialog
                 isOpen={isConfirmDialogOpen}
                 onCancel={handleCancel}

@@ -3,23 +3,19 @@ import {
   Button,
   CloseButton,
   Dialog,
-  For,
   HStack,
   Stack,
   Field,
   Input,
-  Kbd,
   Portal,
-  FormControl
 } from '@chakra-ui/react';
 import axios from 'axios';
-//https://www.chakra-ui.com/docs/components/dialog
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
+const ModalOferta = ({isOpen, onClose, onSave, oferta=null}) => {
   const ref = useRef(null);
   const [formData, setFormData] = useState({
     id: '',
@@ -38,7 +34,6 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-        // axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, formData);
         onSave(formData);
         setFormData({
             id: '', 
@@ -49,7 +44,6 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
         });
     } catch (err) {
         console.error(err);
-        // toast.error('Erro ao cadastrar abaixo. Por favor contate a T.I. Mensagem: ' + err);
     }
     setFormData({ id: '', produto: '', url: '', precoDesejado: '', marca: '' });
   };
@@ -74,10 +68,7 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
           status: 'ativa'
       });
     }
-    console.log(isEdicao);
   }, [oferta]);
-
-  // onOpenChange={(e) => setOpen(e.open)}
 
   return (
     <Dialog.Root key="xl" size="lg" placement="center" motionPreset="slide-in-bottom" open={isOpen}>
@@ -120,78 +111,4 @@ const ModalCadastroOferta = ({isOpen, onClose, onSave, oferta=null}) => {
   )
 }
 
-
-// const ModalCadastroOferta = ({ onSubmit }) => {
-//   const { isOpen, onOpen, onClose } = useDisclosure();
-//   const [formData, setFormData] = React.useState({
-//     produto: '',
-//     url: '',
-//     precoDesejado: ''
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleSubmit = () => {
-//     if (onSubmit) onSubmit(formData);
-//     onClose();
-//     setFormData({ produto: '', url: '', precoDesejado: '' });
-//   };
-
-//   return (
-//     <>
-//       <Button onClick={onOpen} colorScheme="teal">Cadastrar Oferta</Button>
-
-//       <Modal isOpen={isOpen} onClose={onClose}>
-//         <ModalOverlay />
-//         <ModalContent>
-//           <ModalHeader>Nova Oferta</ModalHeader>
-//           <ModalCloseButton />
-//           <ModalBody pb={6}>
-//             <FormControl mb={3}>
-//               <FormLabel>Nome do Produto</FormLabel>
-//               <Input
-//                 placeholder="Tênis Nike Air Max"
-//                 name="produto"
-//                 value={formData.produto}
-//                 onChange={handleChange}
-//               />
-//             </FormControl>
-
-//             <FormControl mb={3}>
-//               <FormLabel>URL do Produto</FormLabel>
-//               <Input
-//                 placeholder="https://www.exemplo.com/produto"
-//                 name="url"
-//                 value={formData.url}
-//                 onChange={handleChange}
-//               />
-//             </FormControl>
-
-//             <FormControl>
-//               <FormLabel>Preço Desejado (R$)</FormLabel>
-//               <Input
-//                 placeholder="199.90"
-//                 name="precoDesejado"
-//                 type="number"
-//                 value={formData.precoDesejado}
-//                 onChange={handleChange}
-//               />
-//             </FormControl>
-//           </ModalBody>
-
-//           <ModalFooter>
-//             <Button colorScheme="teal" mr={3} onClick={handleSubmit}>
-//               Salvar
-//             </Button>
-//             <Button onClick={onClose}>Cancelar</Button>
-//           </ModalFooter>
-//         </ModalContent>
-//       </Modal>
-//     </>
-//   );
-// };
-
-export default ModalCadastroOferta;
+export default ModalOferta;
