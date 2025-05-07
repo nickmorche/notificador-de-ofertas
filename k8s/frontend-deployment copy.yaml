@@ -23,11 +23,8 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: NodePort  # <- adiciona aqui
   selector:
     app: frontend
   ports:
     - protocol: TCP
       port: 3000
-      targetPort: 3000
-      nodePort: 30080  # <- porta entre 30000–32767

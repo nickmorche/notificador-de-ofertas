@@ -1,6 +1,20 @@
-docker_build('backend', './backend')
-docker_build('frontend', './frontend')
+frontend_dir = './frontend'
+backend_dir = './backend'
 
+# Build do frontend com Dockerfile.dev
+docker_build(
+  'frontend', # Nome da Imagem
+  frontend_dir, # Contexto de build
+  dockerfile='./frontend/Dockerfile.dev' # Dockerfile customizado,
+)
+
+# Build do backend
+docker_build(
+    'backend:dev',  # Nome da imagem
+    backend_dir # Contexto de build
+)
+
+# Manifestos do Kubernetes
 k8s_yaml([
   'k8s/backend-deployment.yaml',
   'k8s/frontend-deployment.yaml',
