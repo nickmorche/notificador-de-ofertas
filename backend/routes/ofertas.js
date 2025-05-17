@@ -15,7 +15,9 @@ router.post('/', async (req, res) => {
 // Listar todas as ofertas
 router.get('/', async (req, res) => {
     try {
-        const ofertas = await Oferta.find().sort({ createdAt: -1 });
+        const ofertas = await Oferta
+            .find({ deletedAt: null })
+            .sort({ createdAt: -1 });
         res.json(ofertas);
     } catch (err) {
         res.status(500).json({ erro: err.message });
@@ -26,11 +28,22 @@ router.get('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try { 
         const { id } = req.params;
-        const ofertaDeletada = await Oferta.findByIdAndDelete(id);
-        if(!ofertaDeletada) {
-            return res.status(404).json({ erro: 'Oferta não encontrada'});
-        }
-        res.json({ mensagem: 'Oferta deletada com sucesso' });
+
+        const oferta = await Oferta.findById(id);
+        if(!oferta || oferta.deletedAt){
+            return res.status(404).json({ erro: "Oferta não encontrada ou já deletada"});
+        };
+
+        oferta.deletedAt = new Date();
+        await oferta.save();
+
+        res.json({ mensagem: "Oferta delertada com sucesso! "});
+
+        // const ofertaDeletada = await Oferta.findByIdAndDelete(id);
+        // if(!ofertaDeletada) {
+        //     return res.status(404).json({ erro: 'Oferta não encontrada'});
+        // }
+        // res.json({ mensagem: 'Oferta deletada com sucesso' });
     } catch (err) {
         res.status(500).json({ erro: err.message });
     }
@@ -45,6 +58,24 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ erro: 'Oferta não encontrada' });
         }
         res.json(ofertaAtualizada);
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
+    }
+});
+
+router.put('/:id/restaurar', async (req, res) => {
+    try {
+        const { id } = req.params
+        const oferta = await Oferta.findById(id);
+
+        if (!oferta || !oferta.deletedAt) {
+            return res.status(404).json({ erro: "Oferta não encontrada ou não está deletada" });
+        }
+
+        oferta.deletedAt = null;
+        await oferta.save();
+
+        res.json({ mensagem: "Oferta restaurada com sucesso "});
     } catch (err) {
         res.status(500).json({ erro: err.message });
     }

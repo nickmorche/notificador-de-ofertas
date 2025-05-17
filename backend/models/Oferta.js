@@ -9,7 +9,8 @@ const ofertaSchema = new mongoose.Schema({
         type: String,
         enum: ['ativa', 'inativa'],
         default: 'ativa'
-    }
+    },
+    deletedAt: Date,
 }, {
     timestamps: true
 })

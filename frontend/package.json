@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@ark-ui/react": "^5.8.0",
     "@chakra-ui/provider": "^2.4.2",
     "@chakra-ui/react": "^3.16.0",
     "@chakra-ui/toast": "^7.0.2",

@@ -12,10 +12,14 @@ const OfertaList = () => {
     const [promiseHandlers, setPromiseHandlers] = useState(null);
     const [ofertas, setOfertas] = useState([]);
     const [selectedOferta, setSelectedOferta] = useState({ id: '', produto: '', marca: '', url: '', status: '' });
+    const [undoTimeout, setUndoTimeout] = useState(null);
+    const [deletedOferta, setDeletedOferta] = useState(null);
 
     // Modais
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUndoModalOpen, setIsUndoModalOpen] = useState(false);
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+    
     
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -23,17 +27,20 @@ const OfertaList = () => {
         setSelectedOferta({ id: '', produto: '', marca: '', url: '', status: '' });
     };
 
+    const openUndoModal = () => setIsUndoModalOpen(true);
+    const closeUndoModal = () => setIsUndoModalOpen(false);
+
     const openConfirmDialog = () => {
         setIsConfirmDialogOpen(true)
         return new Promise((resolve, reject) => {
-          setPromiseHandlers({ resolve, reject })
+            setPromiseHandlers({ resolve, reject })
         })
-      }
+    }
     
-      const handleCancel = () => {
+    const handleCancel = () => {
         setIsConfirmDialogOpen(false)
         promiseHandlers?.resolve(false)
-      }
+    }
     
     const handleConfirm = () => {
         setIsConfirmDialogOpen(false)
@@ -80,10 +87,16 @@ const OfertaList = () => {
             },
         });
     };
-    
+
+    const handleEditButton = (oferta) => {
+        setSelectedOferta({ ...oferta });
+        openModal()
+    };
 
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog();
+
+        setDeletedOferta(ofertaToDelete);
 
         const deleteAndUpdate = async () => {
             await axios.delete(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}`);
@@ -97,6 +110,13 @@ const OfertaList = () => {
                 success: {
                     title: "Oferta deletada!",
                     description: " ",
+                    action: {
+                        label: "Desfazer",
+                        onClick: () => {
+                            handleUndo(ofertaToDelete);
+                        }
+                    },
+                    duration: 5000
                 },
                 error: {
                     title: "Erro ao deletar oferta",
@@ -106,11 +126,39 @@ const OfertaList = () => {
             });
         }
     }
+    
 
-    const handleEditButton = (oferta) => {
-        setSelectedOferta({ ...oferta });
-        openModal()
-    }
+    const handleUndo = async (ofertaToDelete) => {
+        const undoDeletedOferta = async () => {
+            await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${ofertaToDelete}/restaurar`);
+        
+            // Aguarda atualização da lista
+            await fetchOfertas();
+        }
+
+        await toaster.promise(undoDeletedOferta, {
+            success: {
+                title: "Oferta restaurada!",
+                description: " ",
+                duration: 5000
+            },
+            error: {
+                title: "Erro ao restaurar oferta",
+                description: "Algo deu errado ao restaurar",
+            },
+            loading: { title: "Restaurando...", description: "Por favor, espere" },
+        });
+        
+        // Restaurar a oferta deletada
+        // if (deletedOferta) {
+        // setOfertas([...ofertas, deletedOferta]);
+        // }
+        
+        // // Limpar o timeout e fechar o modal
+        // if (undoTimeout) clearTimeout(undoTimeout);
+        // setIsUndoModalOpen(false);
+        // setDeletedOferta(null);
+  };
 
     useEffect(() => {
         fetchOfertas();
