@@ -17,7 +17,6 @@ const OfertaList = () => {
 
     // Modais
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isUndoModalOpen, setIsUndoModalOpen] = useState(false);
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     
     
@@ -95,7 +94,7 @@ const OfertaList = () => {
 
     const handleDeleteClick = async (ofertaToDelete) => {
         const confirmed = await openConfirmDialog();
-
+        
         setDeletedOferta(ofertaToDelete);
 
         const deleteAndUpdate = async () => {
