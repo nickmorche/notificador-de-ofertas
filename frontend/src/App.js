@@ -1,19 +1,21 @@
-import * as React from "react"
-import { Button, Box } from '@chakra-ui/react';
-import { Container, Heading, VStack, Text } from '@chakra-ui/react';
-import  OfertaList  from './components/OfertaList.js';
-import { Toaster } from './components/ui/toaster.jsx';
+import { Routes, Route } from "react-router-dom";
+import { Flex, Box } from "@chakra-ui/react";
+import Sidebar from "./components/Sidebar"; 
+import Ofertas from "./pages/Ofertas";
+import Alerts from "./pages/Alerts";
 
 
 function App(){
   return (
-    <Container maxW="container.lg" py={6}>
-      <Heading mb={4}>Ofertas Cadastradas</Heading>
-      <VStack spacing={4} align="stretch">
-        <OfertaList />
-        <Toaster/>
-      </VStack>
-    </Container>
+    <Flex>
+      <Sidebar />
+      <Box flex="1" p={6}>
+        <Routes>
+          <Route path="/" element={<Ofertas />} />
+          <Route path="/alerts" element={<Alerts />} />
+        </Routes>
+      </Box>
+    </Flex>
   );
 }
 
