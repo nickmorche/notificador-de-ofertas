@@ -1,4 +1,4 @@
-import { Box, VStack, Link } from "@chakra-ui/react";
+import { Box, VStack, IconButton, Text, Link, useDisclosure } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 
 const links = [
@@ -8,13 +8,15 @@ const links = [
 ];
 
 export default function Sidebar() {
+    // const { isOpenSidebar, setOpenSidebar } = useDisclosure(); 
+
     return(
         <Box
             as="nav"
             pos="sticky"
             top="0"
             h="100vh"
-            w="64"
+            w="64" //{isOpenSidebar ? "64" : "10" }
             p="4"
             bg="gray.800"
             color="white"
@@ -31,6 +33,7 @@ export default function Sidebar() {
                         w="full"
                         p="2"
                         borderRadius="md"
+                        color="white"
                     >
                         {link.label}
                     </Link>
