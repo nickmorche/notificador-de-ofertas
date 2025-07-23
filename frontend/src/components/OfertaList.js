@@ -175,7 +175,6 @@ const OfertaList = () => {
                 />
             </Box>
             <hr />
-            <h2>Ofertas Cadastradas</h2>
             <SimpleGrid columns={{ base: 1, md: 2 }} minChildWidth="sm" spacing={4}>
                 {ofertas.map(oferta => (
                     <Card.Root key={oferta._id}>
