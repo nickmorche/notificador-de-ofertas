@@ -18,7 +18,7 @@ export default function Footer(){
                 <Link href="https://github.com/nickmorche" isExternal>
                     <Icon as={FaGithub} boxSize={6} />
                 </Link>
-                <Link href="htpps://www.linkedin.com/in/nicolas-morche-0a47ab180" isExternal>
+                <Link href="https://www.linkedin.com/in/nicolas-morche-0a47ab180" isExternal>
                     <Icon as={FaLinkedin} boxSize={6} />
                 </Link>
                 <Text fontSize="sm" color="gray.500">

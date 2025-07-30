@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 import Ofertas from "./pages/Ofertas";
 import Alerts from "./pages/Alerts";
+import Profile from './pages/Profile';
 
 
 function App(){
@@ -14,6 +15,7 @@ function App(){
         <Routes>
           <Route path="/" element={<Ofertas />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </Box>
