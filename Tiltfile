@@ -2,10 +2,30 @@ frontend_dir = './frontend'
 backend_dir = './backend'
 
 # Build do frontend com Dockerfile.dev
+# docker_build(
+#   'frontend', # Nome da Imagem
+#   frontend_dir, # Contexto de build
+#   dockerfile='./frontend/Dockerfile.dev' # Dockerfile customizado,
+# )
+
+# Frontend com live_update (evita rebuild a cada mudança)
+# docker_build(
+#   'frontend',
+#   frontend_dir,
+#   dockerfile='./frontend/Dockerfile.dev',
+#   live_update=[
+#     sync('./frontend', 'app'),
+#     run('npm start', trigger_mode=['src/', 'public/', 'jest.config.js'])
+#   ]
+# )
 docker_build(
-  'frontend', # Nome da Imagem
-  frontend_dir, # Contexto de build
-  dockerfile='./frontend/Dockerfile.dev' # Dockerfile customizado,
+  'frontend',
+  frontend_dir,
+  dockerfile='./frontend/Dockerfile.dev',
+  live_update=[
+    sync('./frontend', '/app'),
+    run('npm start', trigger=['src/', 'app/', 'jest.config.js']),
+  ]
 )
 
 # Build do backend
