@@ -7,18 +7,17 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { withMask } from "use-mask-input";
 
 const schema = yup.object().shape({
     numero_whatsapp: yup.number(),
     email: yup.string().email("Insira um e-mail válido!").required("O e-mail é obrigatório")
 });
 
-// Adicionar nome ou apelido pelo qual devemos chamar ele
-// Adicionar on/off do lado Adicionar e-mail 
-// Adicionar on/off do lado Adicionar número de telefone
-//  
 
 export default function Profile(){
+    const [checkedEmail, setCheckedEmail] = useState(false);
+    const [checkedWhatsApp, setCheckedWhatsApp] = useState(false);
     const [alertas, setAlertas] = useState([
         {id: 1, freq: "Semanalmente", horario: "16:00", dia: "segunda"},
         {id: 2, freq: "Diariamente", horario: "07:00", dia: ""}
@@ -72,20 +71,26 @@ export default function Profile(){
             </Field.Root>
             <Field.Root orientation="horizontal">
                 <Field.Label>E-mail</Field.Label>
-                <Switch.Root size="lg" variant="solid">
+                <Switch.Root size="lg" variant="solid"
+                    checked={checkedEmail}
+                    onCheckedChange={() => setCheckedEmail(!checkedEmail)}
+                >
                     <Switch.HiddenInput />
                     {/* <Switch.Label textWrapMode="nowrap">E-mail</Switch.Label> */}
                     <Switch.Control />
                 </Switch.Root>
-                <Input placeholder="Digite seu e-mail aqui" flex="1" disabled/>
+                <Input disabled={!checkedEmail} placeholder="Digite seu e-mail aqui" flex="1"/>
             </Field.Root>
             <Field.Root orientation="horizontal">
                 <Field.Label>WhatsApp</Field.Label>
-                <Switch.Root size="lg" variant="solid">
+                <Switch.Root size="lg" variant="solid"
+                    checked={checkedWhatsApp}
+                    onCheckedChange={() => setCheckedWhatsApp(!checkedWhatsApp)}
+                >
                     <Switch.HiddenInput />
                     <Switch.Control />
                 </Switch.Root>
-                <Input placeholder="Digite seu número (55) 99993-1321" disabled/>
+                <Input disabled={!checkedWhatsApp} placeholder="(99) 99999-9999" ref={withMask("(99) 99999-9999")} />
             </Field.Root>
         </Stack>
         <Stack gap="8" pb="8" maxW="lg" css={{ "--field-label-width": "144px" }} >
@@ -130,7 +135,10 @@ export default function Profile(){
             </Box>
             </SimpleGrid>
             {/* Formulário de novo alerta */}
-            
+            {/* <Input disabled={isDisabledEmail} />
+            <Button onClick={() => setIsDisabledEmail(!isDisabledEmail)}>
+                Desabilitar
+            </Button> */}
         </Stack>
         {/* <HStack gap={4}>
             <Switch.Root size="lg" variant="solid">
