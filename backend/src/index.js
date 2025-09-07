@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { errorHandler } = require('./middlewares/errorHandler');
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,7 @@ mongoose.connect(MONGO_URI)
     .catch(err => console.error("Erro ao conectar: ", err));
 
 app.use('/api/ofertas', require('./routes/ofertas'));
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);

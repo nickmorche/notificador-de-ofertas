@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para iniciar o backend
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
