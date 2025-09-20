@@ -55,11 +55,16 @@ const OfertaList = () => {
         const isEdit = selectedOferta.hasOwnProperty('_id');
     
         const saveAndUpdate = async () => {
+            const config = {
+                headers: {
+                    token: "minhasenhasecreta"
+                }
+            }
             if (isEdit) {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data);
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/ofertas/${selectedOferta._id}`, data, config);
             } else {
                 delete data.id;
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data);
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/ofertas`, data, config);
             }
     
             // Aguarda atualização da lista
@@ -174,8 +179,8 @@ const OfertaList = () => {
                     oferta={selectedOferta}
                 />
             </Box>
+            
             <hr />
-            <h2>Ofertas Cadastradas</h2>
             <SimpleGrid columns={{ base: 1, md: 2 }} minChildWidth="sm" spacing={4}>
                 {ofertas.map(oferta => (
                     <Card.Root key={oferta._id}>

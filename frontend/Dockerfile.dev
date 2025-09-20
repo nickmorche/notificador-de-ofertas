@@ -5,7 +5,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# PRECISAMOS RODAR O NPM INSTALL 
+# DEPOIS DE CORRIGIREM O ERRO DO NPM INSTALL
+RUN npm install 
 
 COPY . .
 

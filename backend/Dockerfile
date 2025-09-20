@@ -7,6 +7,8 @@ WORKDIR /app
 # Copiar os arquivos de dependência
 COPY package*.json ./
 
+# PRECISAMOS RODAR O NPM INSTALL 
+# DEPOIS DE CORRIGIREM O ERRO DO NPM INSTALL
 # Instalar dependências
 RUN npm install
 

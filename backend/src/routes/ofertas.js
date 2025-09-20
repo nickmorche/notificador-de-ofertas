@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Oferta = require('../models/Oferta');
+const { authMiddleware } = require("../middlewares/auth");
+
 
 // Criar uma nova oferta
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     try {
         const novaOferta = await Oferta.create(req.body);
         res.status(201).json(novaOferta);
@@ -25,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 //Deletar uma oferta
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
     try { 
         const { id } = req.params;
 
@@ -50,7 +52,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Atualizar uma oferta
-router.put('/:id', async (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const ofertaAtualizada = await Oferta.findByIdAndUpdate(id, req.body, { new: true });
@@ -63,7 +65,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id/restaurar', async (req, res) => {
+router.put('/:id/restaurar', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params
         const oferta = await Oferta.findById(id);
